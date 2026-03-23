@@ -12,9 +12,7 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",
-    "db:studio": "prisma studio",
-   
-}
+    "db:studio": "prisma studio"
   },
   "workspaces": [
     "backend",
