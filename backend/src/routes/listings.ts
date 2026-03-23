@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Request, Response } from "express";
 import { prisma } from "../prisma";
 import { z } from "zod";
 import { isAdmin } from "../utils/admin";
@@ -14,7 +14,7 @@ const querySchema = z.object({
 });
 
 // GET /api/listings — только одобренные объявления
-listingsRouter.get("/", async (req, res) => {
+listingsRouter.get("/", async (req: Request, res: Response) => {
   try {
     const parsed = querySchema.safeParse(req.query);
     if (!parsed.success) {
@@ -61,7 +61,7 @@ listingsRouter.get("/", async (req, res) => {
 
 // DELETE /api/listings/:id — мягкое удаление (только владелец или админ)
 // Требует заголовок X-Telegram-User-Id с telegram ID пользователя
-listingsRouter.delete("/:id", async (req, res) => {
+listingsRouter.delete("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const telegramIdRaw = req.headers["x-telegram-user-id"];
@@ -105,7 +105,7 @@ listingsRouter.delete("/:id", async (req, res) => {
 });
 
 // GET /api/listings/:id — одно объявление
-listingsRouter.get("/:id", async (req, res) => {
+listingsRouter.get("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const listing = await prisma.listing.findFirst({

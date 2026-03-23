@@ -7,9 +7,9 @@ export function isAdmin(telegramId: string | number): boolean {
     process.env.ADMIN_TELEGRAM_IDS || process.env.TELEGRAM_ADMIN_IDS || "";
   const ids = idsStr
     .split(",")
-    .map((s) => s.trim())
+    .map((s: string) => s.trim())
     .filter(Boolean)
-    .map((s) => parseInt(s, 10));
+    .map((s: string) => parseInt(s, 10));
   const id = typeof telegramId === "string" ? parseInt(telegramId, 10) : telegramId;
   return !isNaN(id) && ids.includes(id);
 }
