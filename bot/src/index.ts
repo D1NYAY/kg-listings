@@ -239,3 +239,12 @@ bot.launch().then(async () => {
 
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));
+
+import express from "express";
+
+const app = express();
+app.get("/", (_, res) => res.send("Bot is running"));
+
+app.listen(3000, () => {
+  console.log("Dummy server running on port 3000");
+});
