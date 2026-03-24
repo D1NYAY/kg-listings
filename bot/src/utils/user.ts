@@ -1,10 +1,10 @@
 import { User as TgUser } from "telegraf/types";
+import { User as PrismaUser } from "@prisma/client";
 import { prisma } from "../prisma";
 
-export async function getOrCreateUser(from: TgUser) {
+export async function getOrCreateUser(from: TgUser): Promise<PrismaUser> {
   const telegramId = BigInt(from.id);
 
-  // сначала ищем пользователя
   const existing = await prisma.user.findUnique({
     where: { telegramId },
   });
@@ -13,7 +13,6 @@ export async function getOrCreateUser(from: TgUser) {
     return existing;
   }
 
-  // если нет — создаём
   try {
     return await prisma.user.create({
       data: {
@@ -23,10 +22,15 @@ export async function getOrCreateUser(from: TgUser) {
         lastName: from.last_name ?? null,
       },
     });
-  } catch (e) {
-    // если вдруг параллельно уже создался (фикс ошибки P2002)
-    return await prisma.user.findUnique({
+  } catch (error) {
+    const retry = await prisma.user.findUnique({
       where: { telegramId },
     });
+
+    if (retry) {
+      return retry;
+    }
+
+    throw error;
   }
 }
